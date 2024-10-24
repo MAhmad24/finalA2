@@ -481,20 +481,13 @@ void read_file_into_list(char *filename, struct car **head){
  * @param date Integer representing the date in YYMMDD format.
  */
 void date(int date){
+    
+    int year = date / 10000;
+    int month = (date % 10000) / 100;
+    int day = date % 100;
 
-    char dateStr[9];
-    sprintf(dateStr, "%06d", date);
-     
-     dateStr[8] = '\0';
-     dateStr[7] = dateStr[5];
-     dateStr[6] = dateStr[4];
-     dateStr[5] = '/';
-     dateStr[4] = dateStr[3];
-     dateStr[3] = dateStr[2];
-     dateStr[2] = '/';
-     //dateStr[1] = dateStr[1];
+    printf("%02d/%02d/%02d\n", year, month, day);
 
-    printf("%s\n", dateStr);
     return;
 }
 
