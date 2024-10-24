@@ -52,10 +52,16 @@ struct car * insert_to_list(struct car ** head, char plate[], int mileage, int r
  * This function prints out the car details, it should not print return date if it does not exist.
  */
 void print_list(struct car *head){
+
+    //create the current node to print all the cars in the list
     struct car * print_all = head;
+
+    //while loop to go through the list and print each car's details
     while (print_all != NULL){
+
         printf("License Plate: %s \n", print_all->plate);
         printf("Mileage: %d \n", print_all->mileage);
+
         if (print_all->return_date != -1){
         printf("Return Date (yymmdd): %d \n\n");
         } else {
@@ -73,15 +79,22 @@ void print_list(struct car *head){
  * @return Boolean value indicating if the plate is found.
  */
 bool is_plate_in_list(struct car * head, char plate[]){
+
+    //create the current node to check the list
     struct car * check_car = head;
+
+    //while loop to go through the list and check each car's license plate
     while (check_car != NULL){
         if (strcmp(check_car->plate, plate) == 0){
+            //return true if the plate is found
             return true;
         }
         check_car = check_car->next;
     }
+    //return false if the plate is not found
     return false;
 }
+
 
 
 /** 
@@ -91,10 +104,14 @@ bool is_plate_in_list(struct car * head, char plate[]){
  * I wanna be able to copy the node into another list.
  */
 struct car * get_last(struct car **head){
+
+    //create a new node to store the copy.
     struct car * current = *head;
+    //go through the list to find the last node.
     while (current != NULL){
         current = current->next;
     }
+    //return the last node.
     return current;
 }
 
@@ -107,14 +124,19 @@ struct car * get_last(struct car **head){
  */
 struct car * copy_first(struct car *head){
     
+    //create a new node to store the copy.
     struct car * current = head;
 
+    //allocate memory for the new node.
     struct car * copy = (struct car*)malloc(sizeof(struct car));
+
+    //copy the information from the original node to the new node.
     strcpy(copy->plate, current->plate);
     copy->mileage = current->mileage;
     copy->return_date = copy->return_date;
     copy->next = NULL;
     
+    //return the new node.
     return copy;
     
 }
@@ -138,11 +160,13 @@ struct car * copy_first(struct car *head){
  * I wanna be able to copy the node into another list.
  */
 struct car * copyCar(struct car **head, char plate[]){
+    //create a new node to store the copy.
     struct car * searchCar = *head;
 
-
+    //go through the list to find the car with the given plate.
     while (searchCar != NULL){
         if ((strcmp(searchCar->plate, plate)) == 0){
+            //return the car with the given plate.
             return searchCar;
         } else {
             searchCar = searchCar->next;
@@ -159,7 +183,7 @@ struct car * copyCar(struct car **head, char plate[]){
 void swap(struct car *a, struct car *b){
 
 
-
+    //initialise the variables to store the old values of the car's information
     char temp_plate[7];
     int temp_mileage;
     int temp_date;
@@ -167,16 +191,19 @@ void swap(struct car *a, struct car *b){
     //luckily I realised I don't have to at the moment :D
     //struct car *temp_next;
 
+    //copy the information from the second car to the temporary variables.
     strcpy(temp_plate, a->plate);
     temp_mileage = a->mileage;
     temp_date = a->return_date;
     //temp_next = a->next;
 
+    //copy the information from the first car to the second car.
     strcpy(a->plate, b->plate);
     a->mileage = b->mileage;
     a->return_date = b->return_date;
     //a->next = b->next;
 
+    //copy the temporary variables back to the first car.
     strcpy(b->plate, temp_plate);
     b->mileage = temp_mileage;
     b->return_date = temp_date;
@@ -193,39 +220,66 @@ void swap(struct car *a, struct car *b){
  */
 void sort_list(struct car ** head, bool sort_by_mileage, bool sort_by_return_date){
     
+    //create a temporary pointer to iterate through the list
     struct car * current_car = *head;
+    
+    int count = 0;
 
-    int count;
-
-    if (current_car != NULL){
-
-        count = 1;
-
-        while (current_car->next != NULL){
-            count++;
-            current_car = current_car->next;
-        }
+    // Count the number of cars in the list
+    while (current_car != NULL) {
+        count++;
+        current_car = current_car->next;
     }
     
-    struct car * carArray = (struct car*)malloc(count * sizeof(struct car));
+    // If the list is empty or has only one element, no need to sort
+    if (count <= 1) {
+        return;
+    }
+
+    // Create an array of car pointers
+    struct car ** carArray = (struct car**)malloc(count * sizeof(struct car*));
 
     if (carArray == NULL){
         return;
     }
 
-    int i = 0;
-
-    while (current_car != NULL){
-        carArray[i] = *current_car;
+    // Fill the array with pointers to the cars
+    current_car = *head;
+    for (int i = 0; i < count; i++) {
+        carArray[i] = current_car;
         current_car = current_car->next;
-         i++;
     }
 
-    if (sort_by_mileage){
-        
-    } else if (sort_by_return_date){
-        
+    // Perform bubble sort
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            bool should_swap = false;
+
+            if (sort_by_mileage) {
+                should_swap = carArray[j]->mileage > carArray[j + 1]->mileage;
+            } else if (sort_by_return_date) {
+                should_swap = carArray[j]->return_date > carArray[j + 1]->return_date;
+            }
+
+            if (should_swap) {
+                // Swap the pointers
+                struct car * temp = carArray[j];
+                carArray[j] = carArray[j + 1];
+                carArray[j + 1] = temp;
+            }
+        }
     }
+
+    // Reconstruct the linked list
+    *head = carArray[0];
+    for (int i = 0; i < count - 1; i++) {
+        carArray[i]->next = carArray[i + 1];
+    }
+    carArray[count - 1]->next = NULL;
+
+    // Free the temporary array
+    free(carArray);
+
 
     return;
 }
@@ -238,14 +292,19 @@ void sort_list(struct car ** head, bool sort_by_mileage, bool sort_by_return_dat
  */
 struct car * remove_car_from_list(struct car **head, char plate[]){
 
+    //boolean to check if the car was found and removed.
     bool done = 0;
+    //create a temporary pointer to iterate through the list.
     struct car *current = *head;
 
+    //check if the head of the list is the car to be removed.
     if (strcmp(current->plate, plate) == 0){
         *head = current->next;
         free(current);
         done = 1;
+
     } else {
+        //iterate through the list to find the car to be removed.
         while (done != 1){
             if (strcmp(current->next->plate, plate) == 0){
                 struct car *temp_next = current->next->next;
@@ -258,6 +317,7 @@ struct car * remove_car_from_list(struct car **head, char plate[]){
             }
         }
     }
+    //if the boolean isn't 1 by the end, the car wasn't found and removed.
     if (done == 0){
         printf("The provided licence plate isn't registered in the system");
     }
@@ -275,8 +335,12 @@ struct car * remove_car_from_list(struct car **head, char plate[]){
  */
 struct car * remove_first_from_list(struct car **head){
 
+    //create a temporary pointer to iterate through the list.
     struct car * temp = *head;
+
+    //make the second node the new head of the list.
     *head = temp->next;
+    //free the old head node.
     free(temp);
     return *head;
 }
@@ -289,17 +353,21 @@ struct car * remove_first_from_list(struct car **head){
  */
 double profit_calculator(int initial_mileage, int final_mileage){
 
+    //intiate the variable for the additonal mileage.
     int additionalMileage;
+    //calculate the rented mileage by subtracting the initial mileage from the final mileage.
     int rentedMileage = final_mileage - initial_mileage;
 
+    //check if the rented mileage is negative or zero.
     if (rentedMileage <= 0){
         printf("Invalid final mileage.");
     }
-
+    //check if the rented mileage is greater than 200.
     if (rentedMileage > 200 && rentedMileage <= 0){
+        //calculate the additional mileage by subtracting 200 from the rented mileage.
         additionalMileage = rentedMileage - 200;
     }
-
+    //claculate the final fee
     double charge = 80.00 + (additionalMileage * 0.15);
 
     return charge;
@@ -314,15 +382,19 @@ double profit_calculator(int initial_mileage, int final_mileage){
  */
 void write_list_to_file(char *filename, struct car *head){
 
+    //create a temporary pointer to iterate through the list.
     struct car * current = head;
 
+    //open the file in write mode.
     FILE *file = fopen(filename, "w");
 
+    //as long as the node isn't null, print its details to the file.
     while (current != NULL){
         fprintf(file, "%s,%d,%d \n",current->plate, current->mileage, current->return_date);
         
         current = current->next;
     }
+    //close the file.
     fclose(file);
 
 
@@ -337,12 +409,16 @@ void write_list_to_file(char *filename, struct car *head){
  * Reads data from the file and inserts each car into the list.
  */
 void read_file_into_list(char *filename, struct car **head){
-
+    //create a temporary pointer to iterate through the list.
     struct car * current = *head;
 
+    //open the file in read mode.
     FILE * file = fopen(filename, "r");
+
+    //intiate the needed variables.
     int mileageInt, return_dateInt;
 
+    //check if the file is open.
     if (file == NULL){
         perror("Error opening file, check the file name or if the file exists");
         return;
@@ -352,12 +428,17 @@ void read_file_into_list(char *filename, struct car **head){
     //    count++;
     //}
 
-    int c;
+    //int c;
+    //intiate a string array with the maximum size of 256
     char line[256];
 
+    //read each line in the file and insert the car into the list.
     while (fgets(line, sizeof(line), file) != NULL){
 
+        //set maximum size of the plate to 20
         char plate[20];
+
+        //.
         if (sscanf(line, "%9[^,],%d,%d", plate, &mileageInt, &return_dateInt)!= 3){
             printf("Invalid format in line: %s", line);
             continue;
