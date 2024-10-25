@@ -43,6 +43,16 @@ int main(){
             
             printf("Enter the new car's licence plate: \n");
             scanf("%9s", plate);
+
+            if ((is_plate_in_list(repair_head, plate)) != 1) {
+                printf("Error: Car with plate %s not found in repair list.\n", plate);
+                break;
+            }
+            else if (is_valid_plate(plate) == 0) {
+                printf("Error: Invalid licence plate.\n");
+                break;
+            }
+
             printf("Enter the new car's mileage: \n");
             scanf("%d", &mileage);
 
@@ -62,6 +72,15 @@ int main(){
 
             printf("Enter the licence plate of the rented car: \n");
             scanf("%9s", plate);
+
+            if ((is_plate_in_list(repair_head, plate)) != 1) {
+                printf("Error: Car with plate %s not found in repair list.\n", plate);
+                break;
+            }
+            else if (is_valid_plate(plate) == 0) {
+                printf("Error: Invalid licence plate.\n");
+                break;
+            }
             //struct car *car_to_return = is_plate_in_list(rented_head, plate);
 
             //if (car_to_return == NULL) {
@@ -76,7 +95,13 @@ int main(){
 
             if (copy2 != NULL) {
                 double charge = profit_calculator(copy2->mileage, mileage);
-                printf("Charge for rental: $%.2f\n", charge);
+                if (charge != -1.0){
+                    printf("Charge for rental: $%.2f\n", charge);
+                } else {
+                    printf("Invalid final mileage.\n");
+                    break;
+                }
+                
             }
             remove_car_from_list(&rented_head, plate);
 
@@ -93,6 +118,16 @@ int main(){
 
             printf("Enter the licence plate of the returned car: \n");
             scanf("%9s", plate);
+
+            if ((is_plate_in_list(repair_head, plate)) != 1) {
+                printf("Error: Car with plate %s not found in repair list.\n", plate);
+                break;
+            }
+            else if (is_valid_plate(plate) == 0) {
+                printf("Error: Invalid licence plate.\n");
+                break;
+            }
+
             printf("Enter the mileage of the returned car: \n");
             scanf("%d", &mileage);
             
@@ -121,19 +156,23 @@ int main(){
             printf("Enter the new car's licence plate: \n");
             scanf("%19s", plate);
 
-            printf("THIS CODE IS");
-            printf("%s", plate);
+            // printf("THIS CODE IS");
+            // printf("%s", plate);
 
             if ((is_plate_in_list(repair_head, plate)) != 1) {
                 printf("Error: Car with plate %s not found in repair list.\n", plate);
                 break;
             }
-
-            struct car * copy4 = copyCar(&repair_head, plate);
-            if (copy4 == NULL) {
-                printf("plate %s, mileage %d, Return date %d\n", copy4->plate, copy4->mileage, copy4->return_date);
+            else if (is_valid_plate(plate) == 0) {
+                printf("Error: Invalid licence plate.\n");
                 break;
             }
+
+            struct car * copy4 = copyCar(&repair_head, plate);
+            // if (copy4 == NULL) {
+            //     printf("plate %s, mileage %d, Return date %d\n", copy4->plate, copy4->mileage, copy4->return_date);
+            //     break;
+            // }
             //print_list(available_head);
 
             remove_car_from_list(&repair_head, plate);
@@ -146,9 +185,9 @@ int main(){
             insert_to_list(&available_head, plate, copy4->mileage, -1);
             
 
-            if ((is_plate_in_list(available_head, plate))) {
-                printf("MOVED\n", plate);
-            }
+            // if ((is_plate_in_list(available_head, plate))) {
+            //     printf("MOVED\n", plate);
+            // }
             
 
             write_list_to_file("available.txt", available_head);
@@ -166,7 +205,10 @@ int main(){
             printf("Enter your expected return date: \n");
             scanf("%d", &return_date);
 
-
+            if (is_valid_date(return_date) == 0) {
+                printf("Error: Invalid date.\n");
+                break;
+            }
 
             struct car * copy5 = copy_first(available_head);
 

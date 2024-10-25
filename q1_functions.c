@@ -361,12 +361,15 @@ double profit_calculator(int initial_mileage, int final_mileage){
     //check if the rented mileage is negative or zero.
     if (rentedMileage <= 0){
         printf("Invalid final mileage.");
+        return -1.0; 
     }
     //check if the rented mileage is greater than 200.
-    if (rentedMileage > 200 && rentedMileage <= 0){
+    else if (rentedMileage > 200 && rentedMileage <= 0){
         //calculate the additional mileage by subtracting 200 from the rented mileage.
         additionalMileage = rentedMileage - 200;
     }
+    
+    
     //claculate the final fee
     double charge = 80.00 + (additionalMileage * 0.15);
 
@@ -510,3 +513,46 @@ void free_list(struct car ** head){
 
     return;
 }
+
+
+/**
+ * Checks if the given license plate is valid.
+ * This function validates a license plate by checking its length and
+ * ensuring it contains only alphanumeric characters.
+ * @param plate A null-terminated string representing the license plate to validate.
+ * @return int Returns 1 if the plate is valid, 0 otherwise.
+ */
+int is_valid_plate(const char *plate) {
+    int len = strlen(plate);
+    if (len < 2 || len > 8) {
+        return 0;
+    }
+    for (int i = 0; i < len; i++) {
+        if (!isalnum(plate[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/**
+ * Validates if the given date is in a valid format.
+ * This function checks if the provided date is valid by extracting the year, month,
+ * and day components and performing basic range checks.
+ * @param date An integer representing the date in YYMMDD format.
+ * @return int Returns 1 if the date is valid, 0 otherwise.
+ */
+int is_valid_date(int date) {
+    int year = date / 10000;
+    int month = (date % 10000) / 100;
+    int day = date % 100;
+
+    if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31) {
+        return 0;
+    }
+
+    // Additional checks for days in each month can be added here
+
+    return 1;
+}
+

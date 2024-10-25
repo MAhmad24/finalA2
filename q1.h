@@ -30,3 +30,5 @@ void write_list_to_file(char *filename, struct car *head);
 void read_file_into_list(char *filename, struct car **head);
 void date(int date);
 void free_list(struct car ** head);
+int is_valid_plate(const char *plate);
+int is_valid_date(int date);
