@@ -33,8 +33,7 @@ int main(int argc, char** argv){
         }
         i--;
         push(&stack, value);
-      } else if (expression[i] == '+' || expression[i] == '-' ||
-      expression[i] == '*' || expression[i] == '/') {
+      } else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/') {
         if (stack == NULL || stack->next == NULL) {
           fprintf(stderr, "Error: Not enough operands for operator %c\n", expression[i]);
           break;
