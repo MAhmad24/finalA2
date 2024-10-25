@@ -1,20 +1,25 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
-DEPS1 = q1.h
-DEPS2 = q2.h
-OBJ1 = q1.o q1_functions.o
-OBJ2 = q2.o q2_functions.o
 
 all: q1 q2
 
-%.o: %.c $(DEPS1) $(DEPS2)
-    $(CC) -c -o $@ $< $(CFLAGS)
+q1: q1.o q1_functions.o
+    $(CC) $(CFLAGS) -o q1 q1.o q1_functions.o
 
-q1: $(OBJ1)
-    $(CC) -o $@ $^ $(CFLAGS)
+q2: q2.o q2_functions.o
+    $(CC) $(CFLAGS) -o q2 q2.o q2_functions.o
 
-q2: $(OBJ2)
-    $(CC) -o $@ $^ $(CFLAGS)
+q1.o: q1.c q1.h
+    $(CC) $(CFLAGS) -c q1.c
+
+q1_functions.o: q1_functions.c q1.h
+    $(CC) $(CFLAGS) -c q1_functions.c
+
+q2.o: q2.c q2.h
+    $(CC) $(CFLAGS) -c q2.c
+
+q2_functions.o: q2_functions.c q2.h
+    $(CC) $(CFLAGS) -c q2_functions.c
 
 clean:
     rm -f *.o q1 q2
