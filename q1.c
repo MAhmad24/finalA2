@@ -73,6 +73,11 @@ int main(){
             scanf("%d", &mileage);
             
             struct car * copy2 = copyCar(&rented_head, plate);
+
+            if (copy2 != NULL) {
+                double charge = profit_calculator(copy2->mileage, mileage);
+                printf("Charge for rental: $%.2f\n", charge);
+            }
             remove_car_from_list(&rented_head, plate);
 
             insert_to_list(&available_head, plate, mileage, copy2->return_date);
@@ -93,6 +98,11 @@ int main(){
             
             struct car * copy3 = copyCar(&rented_head, plate);
 
+            if (copy3 != NULL) {
+                double charge = profit_calculator(copy3->mileage, mileage);
+                printf("Charge for rental: $%.2f\n", charge);
+            }
+
             remove_car_from_list(&rented_head, plate);
             
             insert_to_list(&repair_head, plate, mileage, copy3->return_date);
@@ -106,7 +116,8 @@ int main(){
             break;
         
         case 4:
-
+            
+            printf("Transfer a car from repair list to available-for-rent list\n");
             printf("Enter the new car's licence plate: \n");
             scanf("%19s", plate);
 
@@ -151,6 +162,7 @@ int main(){
 
         case 5:
 
+            printf("Rent the first available car\n");
             printf("Enter your expected return date: \n");
             scanf("%d", &return_date);
 
@@ -171,18 +183,22 @@ int main(){
 
         case 6: 
 
+            printf("Print all lists\n");
+            printf("Available-for-rent list:\n");
             print_list(available_head);
+            printf("Rented list:\n");
             print_list(rented_head);
+            printf("Repair list:\n");
             print_list(repair_head);
-
             break;
 
         case 7:
             
+            printf("Quit and save data\n");
             write_list_to_file("available.txt", available_head);
             write_list_to_file("rented.txt", rented_head);
             write_list_to_file("repair.txt", repair_head);
-
+            printf("Action: All data saved to files\n");
             break;
 
         default:
