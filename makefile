@@ -1,7 +1,7 @@
 .RECIPEPREFIX := >
 
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
+CFLAGS = -Wall -std=c99 -pedantic
 
 all: q1 q2
 
