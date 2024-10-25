@@ -15,50 +15,62 @@ int main(int argc, char** argv){
 
 
   //Pointer to the stack
-  int i = 0;
-  Operand * stack = NULL;
-  
+ for (int i = 1; i < argc; i++) {
+    Operand *stack = NULL;
+    char *expression = argv[i];
 
-  //Loop through the second command line arguement, containing the operands and the numbers 
-  for(i = 0; i < strlen(argv[1]); ++i){
+    if (strlen(expression) == 0) {
+      fprintf(stderr, "Error: Empty expression\n");
+      continue;
+    }
 
-    if (isdigit(expression[i])) {
-      // Handle multi-digit numbers
-      double value = 0;
-      while (isdigit(expression[i])) {
-        value = value * 10 + (expression[i] - '0');
-        i++;
-      }
-    } 
-    else if (expression[i] == '+' || expression[i] == '-' ||
-      expression[i] == '*' || expression[i] == '/') {
-      double operand2 = pop(&stack);
-      double operand1 = pop(&stack);
-      double result;
-
-      switch (expression[i]) {
-        case '+': result = operand1 + operand2; break;
-        case '-': result = operand1 - operand2; break;
-        case '*': result = operand1 * operand2; break;
-        case '/':
-        if (operand2 == 0) {
-          fprintf(stderr, "Error: Division by zero\n");
-          exit(1);
+    for (int i = 0; i < strlen(expression); ++i) {
+      if (isdigit(expression[i])) {
+        double value = 0;
+        while (isdigit(expression[i])) {
+          value = value * 10 + (expression[i] - '0');
+          i++;
         }
-      result = operand1 / operand2;
-      break;
+        i--;
+        push(&stack, value);
+      } else if (expression[i] == '+' || expression[i] == '-' ||
+      expression[i] == '*' || expression[i] == '/') {
+        if (stack == NULL || stack->next == NULL) {
+          fprintf(stderr, "Error: Not enough operands for operator %c\n", expression[i]);
+          break;
+        }
+        double operand2 = pop(&stack);
+        double operand1 = pop(&stack);
+        double result;
+
+        switch (expression[i]) {
+          case '+': result = operand1 + operand2; break;
+          case '-': result = operand1 - operand2; break;
+          case '*': result = operand1 * operand2; break;
+          case '/':
+            if (operand2 == 0) {
+              fprintf(stderr, "Error: Division by zero\n");
+              exit(1);
+            }
+            result = operand1 / operand2;
+            break;
+        }
+        push(&stack, result);
+      } 
+      else if (expression[i] != ' ') {
+        fprintf(stderr, "Error: Invalid character in expression\n");
+        exit(1);
       }
-    push(&stack, result);
+    }
+
+    if (stack == NULL) {
+      fprintf(stderr, "Error: Invalid expression (empty stack)\n");
+      continue;
+    }
+        
+
+    printf("The value of the expression %s is: %.2f\n", expression, pop(&stack));
   }
-    /*Remember data passed from command line is a char data type*/
-    
-    /* **Hint** You will need to perform stack operations that 
-    we implemented here to achieve the expected output */
-    
- 
-  }
-  
-  printf("The value of the expression is: %.2f\n", pop(&stack));
 
   return 0;
 }
