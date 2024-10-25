@@ -1,6 +1,6 @@
 /*
-Name:
-Student ID: 
+Name: Mohammad Ahmad
+Student ID: 1236039
 Assignment 2, Question 2
 */
 
